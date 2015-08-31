@@ -130,90 +130,80 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 <body>
     <h1>Automatic URP Generator</h1>
     <h2>So you can copy/paste and stuff</h2>
-    <p>All fields are required.</p>
+    <p class="info message">All fields are required.</p>
     <?php if ($error_message != "") echo '<p class="error message">'.$error_message.'</p>'; ?>
     <form action="" method="POST" id="urp">
     
-        <p class="label <?php if ($errors && !validinput($_POST['name'])) echo 'error'; ?>">Full Name:
-            <input type="text" name="name" value="<?php echo $_POST['name']; ?>">
-        </p>
-        
-        <p class="label <?php if ($errors && !validinput($_POST['sex'])) echo 'error'; ?>">Sex:
+        <div class="section">
+            <p class="label <?php if ($errors && !validinput($_POST['name'])) echo 'error'; ?>">Full Name</p>
+            <input type="text" name="name" placeholder="Jane Doe" value="<?php echo $_POST['name']; ?>">
+            
+            <p class="label <?php if ($errors && !validinput($_POST['sex'])) echo 'error'; ?>">Sex</p>
             <input type="radio" name="sex" value="Male" <?php if ($_POST['sex'] == "Male") echo 'checked';?>>Male
             <input type="radio" name="sex" value="Female" <?php if ($_POST['sex'] == "Female") echo 'checked';?>>Female
-        </p>
+            
+            <p class="label <?php if ($errors && !validinput($_POST["dob"])) echo 'error'; ?>">Date of Birth</p>
+            <input type="text" name="dob" placeholder="MM/DD/YYYY" value="<?php echo $_POST["dob"]; ?>">
+            
+            <p class="label <?php if ($errors && (!validinput($_POST["address1"]) || !validinput($_POST["address3"]))) echo 'error'; ?>">Campus or Local Address</p>
+            <input type="text" name="address1" placeholder="110 8th St." value="<?php echo $_POST["address1"]; ?>"><br>
+            <input type="text" name="address2" placeholder="" value="<?php echo $_POST["address2"]; ?>"><br>
+            <input type="text" name="address3" placeholder="Troy, NY 12180" value="<?php echo $_POST["address3"]; ?>">
+            
+            <p class="label <?php if ($errors && !validinput($_POST["phone"])) echo 'error'; ?>">Campus/Local Phone</p>
+            <input type="text" name="phone" placeholder="(518) 555-5555" value="<?php echo $_POST["phone"]; ?>">
+            
+            <p class="label <?php if ($errors && !validinput($_POST["email"])) echo 'error'; ?>">Email</p>
+            <input type="text" name="email" placeholder="me@rpi.edu" value="<?php echo $_POST["email"]; ?>">
+            
+            <p class="label <?php if ($errors && !validinput($_POST["rin"])) echo 'error'; ?>">RIN</p>
+            <input type="text" name="rin" placeholder="660000000" value="<?php echo $_POST["rin"]; ?>">
+        </div>
         
-        <p class="label <?php if ($errors && !validinput($_POST["dob"])) echo 'error'; ?>">Date of Birth:
-            <input type="text" name="dob" value="<?php echo $_POST["dob"]; ?>">
-        </p>
-        
-        <p class="label <?php if ($errors && (!validinput($_POST["address1"]) || !validinput($_POST["address3"]))) echo 'error'; ?>">Campus or Local Address:
-            <input type="text" name="address1" value="<?php echo $_POST["address1"]; ?>"><br>
-            <input type="text" name="address2" value="<?php echo $_POST["address2"]; ?>"><br>
-            <input type="text" name="address3" value="<?php echo $_POST["address3"]; ?>">
-        </p>
-        
-        <p class="label <?php if ($errors && !validinput($_POST["phone"])) echo 'error'; ?>">Campus/Local Phone:
-            <input type="text" name="phone" value="<?php echo $_POST["phone"]; ?>">
-        </p>
-        
-        <p class="label <?php if ($errors && !validinput($_POST["email"])) echo 'error'; ?>">Email:
-            <input type="text" name="email" value="<?php echo $_POST["email"]; ?>">
-        </p>
-        
-        <p class="label <?php if ($errors && !validinput($_POST["rin"])) echo 'error'; ?>">RIN:
-            <input type="text" name="rin" value="<?php echo $_POST["rin"]; ?>">
-        </p>
-        
-        <hr>
-        
-        <p class="label <?php if ($errors && !validinput($_POST["degree"])) echo 'error'; ?>">Degree Program:
-            <input type="text" name="degree" value="<?php echo $_POST["degree"]; ?>">
-        </p>
-        
-        <p class="label <?php if ($errors && !validinput($_POST["year"])) echo 'error'; ?>">Year:
+        <div class="section">
+            <p class="label <?php if ($errors && !validinput($_POST["degree"])) echo 'error'; ?>">Degree Program</p>
+            <input type="text" name="degree" placeholder="CSCI" value="<?php echo $_POST["degree"]; ?>">
+            
+            <p class="label <?php if ($errors && !validinput($_POST["year"])) echo 'error'; ?>">Year</p>
             <input type="radio" name="year" value="first year" <?php if ($_POST['year'] == "first year") echo 'checked';?>>First Year
             <input type="radio" name="year" value="sophomore" <?php if ($_POST['year'] == "sophomore") echo 'checked';?>>Sophomore
             <input type="radio" name="year" value="junior" <?php if ($_POST['year'] == "junior") echo 'checked';?>>Junior
             <input type="radio" name="year" value="senior" <?php if ($_POST['year'] == "senior") echo 'checked';?>>Senior
-        </p>
-        
-        <p class="label <?php if ($errors && !validinput($_POST["citizen"])) echo 'error'; ?>">U.S. Citizen:
+            
+            <p class="label <?php if ($errors && !validinput($_POST["citizen"])) echo 'error'; ?>">U.S. Citizen</p>
             <input type="radio" name="citizen" value="Yes" <?php if ($_POST['citizen'] == "Yes") echo 'checked';?>>Yes
             <input type="radio" name="citizen" value="No" <?php if ($_POST['citizen'] == "No") echo 'checked';?>>No
-        </p>
-        
-        <p class="label <?php if ($errors && $_POST['citizen'] == "No" && !validinput($_POST["altcitizen"])) echo 'error'; ?>">If no, country of citizenship:
-            <input type="text" name="altcitizen" value="<?php echo $_POST["altcitizen"]; ?>">
-        </p>
-        
-        <p class="label <?php if ($errors && !validinput($_POST["teaching"])) echo 'error'; ?>">Do you have an interest in teaching in the future:
+            
+            <p class="indented label <?php if ($errors && $_POST['citizen'] == "No" && !validinput($_POST["altcitizen"])) echo 'error'; ?>">If no, country of citizenship</p>
+            <input class="indented" type="text" name="altcitizen" value="<?php echo $_POST["altcitizen"]; ?>">
+            
+            <p class="label <?php if ($errors && !validinput($_POST["teaching"])) echo 'error'; ?>">Do you have an interest in teaching in the future?</p>
             <input type="radio" name="teaching" value="Yes" <?php if ($_POST['teaching'] == "Yes") echo 'checked';?>>Yes
             <input type="radio" name="teaching" value="No" <?php if ($_POST['teaching'] == "No") echo 'checked';?>>No
-        </p>
-        
-        <p class="label <?php if ($errors && !validinput($_POST["ethnicity-africanamerican"]) && !validinput($_POST["ethnicity-hispanic"]) && !validinput($_POST["ethnicity-nativeamerican"]) && !validinput($_POST["ethnicity-other"])) echo 'error'; ?>">Ethnicity:
+            
+            <p class="label <?php if ($errors && !validinput($_POST["ethnicity-africanamerican"]) && !validinput($_POST["ethnicity-hispanic"]) && !validinput($_POST["ethnicity-nativeamerican"]) && !validinput($_POST["ethnicity-other"])) echo 'error'; ?>">Ethnicity</p>
             <input type="checkbox" name="ethnicity-africanamerican" value="Yes" <?php if ($_POST['ethnicity-africanamerican'] == "Yes") echo 'checked';?>>Afr. Am.
             <input type="checkbox" name="ethnicity-hispanic" value="Yes" <?php if ($_POST['ethnicity-hispanic'] == "Yes") echo 'checked';?>>Hisp.
             <input type="checkbox" name="ethnicity-nativeamerican" value="Yes" <?php if ($_POST['ethnicity-nativeamerican'] == "Yes") echo 'checked';?>>Native Am.
             <input type="checkbox" name="ethnicity-other" value="Yes" <?php if ($_POST['ethnicity-other'] == "Yes") echo 'checked';?>>Other
-        </p>
-        
-        <p class="label <?php if ($errors && !validinput($_POST["compensation"])) echo 'error'; ?>">Compensation:
+            
+            <p class="label <?php if ($errors && !validinput($_POST["compensation"])) echo 'error'; ?>">Compensation</p>
             <input type="radio" name="compensation" value="Credit" <?php if ($_POST['compensation'] == "Credit") echo 'checked';?>>Credit
             <input type="radio" name="compensation" value="funding" <?php if ($_POST['compensation'] == "funding") echo 'checked';?>>Funding
             <input type="radio" name="compensation" value="experience" <?php if ($_POST['compensation'] == "experience") echo 'checked';?>>For the Experience
-        </p>
+            
+            <p class="label <?php if ($errors && !validinput($_POST["title"])) echo 'error'; ?>">Project Title</p>
+            <input type="text" name="title" value="<?php echo $_POST["title"]; ?>">
+        </div>
         
-        <p class="label <?php if ($errors && !validinput($_POST["title"])) echo 'error'; ?>">Project Title:
-            <input type="text" name="title" value="<?php echo $_POST["name"]; ?>">
-        </p>
-        
-        <p class="label <?php if ($errors && !validinput($_POST["plan"])) echo 'error'; ?>">Project Plan:
+        <div class="section-wide">
+            <p class="label <?php if ($errors && !validinput($_POST["plan"])) echo 'error'; ?>">Project Plan</p>
             <textarea name="plan" form="urp"><?php echo $_POST["plan"]; ?></textarea>
-        </p>
+        </div>
         
-        <input type="submit" value="Submit">
+        <div class="section-wide">
+            <input type="submit" value="Submit">
+        </div>
     </form>
 </body>
 </html>

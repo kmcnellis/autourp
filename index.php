@@ -5,11 +5,19 @@ function validinput($var)
     return isset($var) && !empty($var);
 }
 
+//http://stackoverflow.com/a/2021729/1122135
+function sanitize_for_file_name($var)
+{
+    // Remove anything which isn't a word, whitespace, number
+    // or any of the following caracters -_~,;:[]().
+    $var = preg_replace("([^\w\s\d\-_~,;:\[\]\(\).])", '', $var);
+    $var = preg_replace("([\.]{2,})", '', $var);
+    return str_replace(' ', '', $var);
+}
+
 $errors = false;
 $error_message = "";
 $infile = 'URP_Application.pdf';
-$formfile = sys_get_temp_dir().'/form.fdf';
-$outfile = sys_get_temp_dir().'/urp-rcos.pdf';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
@@ -17,8 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         validinput($_POST['sex']) &&
         validinput($_POST['dob']) &&
         validinput($_POST['address1']) &&
-        //validinput($_POST['address2']) &&
-        validinput($_POST['address3']) &&
+        (
+            validinput($_POST['address2']) ||
+            validinput($_POST['address3'])
+        ) &&
         validinput($_POST['phone']) &&
         validinput($_POST['email']) &&
         validinput($_POST['rin']) &&
@@ -35,12 +45,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         validinput($_POST['plan']) &&
         (
             validinput($_POST['ethnicity-africanamerican']) ||
-            validinput($_POST['ethnicity-africanamerican']) ||
-            validinput($_POST['ethnicity-africanamerican']) ||
-            validinput($_POST['ethnicity-africanamerican'])
+            validinput($_POST['ethnicity-hispanic']) ||
+            validinput($_POST['ethnicity-nativeamerican']) ||
+            validinput($_POST['ethnicity-other'])
         ))
     {
         require_once('forge_fdf.php');
+        
+        $clean_name = sanitize_for_file_name($_POST['name']);
+        $clean_title = sanitize_for_file_name($_POST['title']);
+        
+        $formfile = sys_get_temp_dir().'/form-'.$clean_name.'-'.$clean_title.'.fdf';
+        $outfile = sys_get_temp_dir().'/urp-rcos-'.$clean_name.'-'.$clean_title.'.pdf';
         
         $fdf_data_names = array();
         $fdf_data_strings = array();
@@ -88,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         $fdf = forge_fdf("", $fdf_data_strings, $fdf_data_names, $fields_hidden, $fields_readonly);
         
         file_put_contents($formfile, $fdf);
-        exec('pdftk '.$infile.' fill_form '.$formfile.' output '.$outfile.' flatten');
+        exec('pdftk '.escapeshellcmd($infile).' fill_form '.escapeshellcmd($formfile).' output '.escapeshellcmd($outfile).' flatten');
         
         if (file_exists($outfile))
         {
@@ -132,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     <h2>So you can copy/paste and stuff</h2>
     <p class="info message">All fields are required.</p>
     <?php if ($error_message != "") echo '<p class="error message">'.$error_message.'</p>'; ?>
-    <form action="" method="POST" id="urp">
+    <form action="/" method="POST" id="urp">
     
         <div class="section">
             <p class="label <?php if ($errors && !validinput($_POST['name'])) echo 'error'; ?>">Full Name</p>
@@ -145,9 +161,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             <p class="label <?php if ($errors && !validinput($_POST["dob"])) echo 'error'; ?>">Date of Birth</p>
             <input type="text" name="dob" placeholder="MM/DD/YYYY" value="<?php echo $_POST["dob"]; ?>">
             
-            <p class="label <?php if ($errors && (!validinput($_POST["address1"]) || !validinput($_POST["address3"]))) echo 'error'; ?>">Campus or Local Address</p>
+            <p class="label <?php if ($errors && (!validinput($_POST["address1"]) || (!validinput($_POST["address2"]) && !validinput($_POST["address3"])))) echo 'error'; ?>">Campus or Local Address</p>
             <input type="text" name="address1" placeholder="110 8th St." value="<?php echo $_POST["address1"]; ?>"><br>
-            <input type="text" name="address2" placeholder="" value="<?php echo $_POST["address2"]; ?>"><br>
+            <input type="text" name="address2" placeholder="Apt 1337" value="<?php echo $_POST["address2"]; ?>"><br>
             <input type="text" name="address3" placeholder="Troy, NY 12180" value="<?php echo $_POST["address3"]; ?>">
             
             <p class="label <?php if ($errors && !validinput($_POST["phone"])) echo 'error'; ?>">Campus/Local Phone</p>

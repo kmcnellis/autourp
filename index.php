@@ -144,6 +144,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
 <body>
+    <a class="return-link" href="http://rcos.io">&lt;-- Return to Observatory</a>
+    <span> | </span>
+    <a class="return-link" href="/URP_Application.pdf">Original URP Form</a>
     <h1>Automatic URP Generator</h1>
     <h2>So you can copy/paste and stuff</h2>
     <p class="info message">All fields are required.</p>

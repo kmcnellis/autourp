@@ -17,7 +17,8 @@ function sanitize_for_file_name($var)
 
 $errors = false;
 $error_message = "";
-$infile = 'URP_Application.pdf';
+$infileurp = 'URP_Application.pdf';
+$infile4ur = '4ur.pdf';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
@@ -55,70 +56,106 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         $clean_name = sanitize_for_file_name($_POST['name']);
         $clean_title = sanitize_for_file_name($_POST['title']);
         
-        $formfile = sys_get_temp_dir().'/form-'.$clean_name.'-'.$clean_title.'.fdf';
-        $outfile = sys_get_temp_dir().'/urp-rcos-'.$clean_name.'-'.$clean_title.'.pdf';
+        //Fill in the URP form
+        $formfileurp = sys_get_temp_dir().'/form-urp-'.$clean_name.'-'.$clean_title.'.fdf';
+        $outfileurp = sys_get_temp_dir().'/urp-rcos-'.$clean_name.'-'.$clean_title.'.pdf';
         
-        $fdf_data_names = array();
-        $fdf_data_strings = array();
-        $fields_hidden = array();
-        $fields_readonly = array();
+        $urp_data_names = array();
+        $urp_data_strings = array();
+        $urp_hidden = array();
+        $urp_readonly = array();
         
         //The stuff that's not in the form
-        $fdf_data_strings['fall'] = '15';
-        $fdf_data_strings['facultySupervisorName'] = 'David Goldschmidt';
-        $fdf_data_strings['facultySupervisorDepartment'] = 'CSCI';
-        $fdf_data_strings['facultySupervisorCampusPhone'] = 'x2819';
-        $fdf_data_strings['facultySupervisorEmailAddress'] = 'gol'.'dsch'.'midt'.'@'.'gmail'.'.'.'com'; //maybe prevent some spam?
+        $urp_data_strings['fall'] = '15';
+        $urp_data_strings['facultySupervisorName'] = 'David Goldschmidt';
+        $urp_data_strings['facultySupervisorDepartment'] = 'CSCI';
+        $urp_data_strings['facultySupervisorCampusPhone'] = 'x2819';
+        $urp_data_strings['facultySupervisorEmailAddress'] = 'gol'.'dsch'.'midt'.'@'.'gmail'.'.'.'com'; //maybe prevent some spam?
         
-        $fdf_data_strings['studentName']             = $_POST['name'];
-        $fdf_data_strings['maleFemale']              = $_POST['sex'];
-        $fdf_data_strings['dateOfBirth']             = $_POST['dob'];
-        $fdf_data_strings['Address 1']               = $_POST['address1'];
-        $fdf_data_strings['Address 2']               = $_POST['address2'];
-        $fdf_data_strings['cityStateZip']            = $_POST['address3'];
-        $fdf_data_strings['phoneNumber']             = $_POST['phone'];
-        $fdf_data_strings['emailAddress']            = $_POST['email'];
-        $fdf_data_strings['RIN']                     = $_POST['rin'];
-        $fdf_data_strings['degreeProgram']           = $_POST['degree'];
-        $fdf_data_strings['rpiYear']                 = $_POST['year'];
-        $fdf_data_strings['usCitizenship']           = $_POST['citizen'];
-        $fdf_data_strings['countryOfCitizenship']    = $_POST['altcitizen'];
-        $fdf_data_strings['interestInTeaching']      = $_POST['teaching'];
-        $fdf_data_strings['creditFundingExperience'] = $_POST['compensation'];
-        $fdf_data_strings['projectTitle']            = 'RCOS - '.$_POST['title'];
-        $fdf_data_strings['projectDescription']      = $_POST['plan'];
+        $urp_data_strings['studentName']             = $_POST['name'];
+        $urp_data_strings['maleFemale']              = $_POST['sex'];
+        $urp_data_strings['dateOfBirth']             = $_POST['dob'];
+        $urp_data_strings['Address 1']               = $_POST['address1'];
+        $urp_data_strings['Address 2']               = $_POST['address2'];
+        $urp_data_strings['cityStateZip']            = $_POST['address3'];
+        $urp_data_strings['phoneNumber']             = $_POST['phone'];
+        $urp_data_strings['emailAddress']            = $_POST['email'];
+        $urp_data_strings['RIN']                     = $_POST['rin'];
+        $urp_data_strings['degreeProgram']           = $_POST['degree'];
+        $urp_data_strings['rpiYear']                 = $_POST['year'];
+        $urp_data_strings['usCitizenship']           = $_POST['citizen'];
+        $urp_data_strings['countryOfCitizenship']    = $_POST['altcitizen'];
+        $urp_data_strings['interestInTeaching']      = $_POST['teaching'];
+        $urp_data_strings['creditFundingExperience'] = $_POST['compensation'];
+        $urp_data_strings['projectTitle']            = 'RCOS - '.$_POST['title'];
+        $urp_data_strings['projectDescription']      = $_POST['plan'];
         
         //Ethnicity field wasn't created properly, needs to be done this way :(
         if(validinput($_POST['ethnicity-africanamerican']))
-            $fdf_data_strings['AfricanAmerican'] = 'Yes';
+            $urp_data_strings['AfricanAmerican'] = 'Yes';
         
         if(validinput($_POST['ethnicity-hispanic']))
-            $fdf_data_strings['Hispanic'] = 'Yes';
+            $urp_data_strings['Hispanic'] = 'Yes';
         
         if(validinput($_POST['ethnicity-nativeamerican']))
-            $fdf_data_strings['nativeAmerican'] = 'Yes';
+            $urp_data_strings['nativeAmerican'] = 'Yes';
         
         if(validinput($_POST['ethnicity-other']))
-            $fdf_data_strings['Other'] = 'Yes';
+            $urp_data_strings['Other'] = 'Yes';
         
-        $fdf = forge_fdf("", $fdf_data_strings, $fdf_data_names, $fields_hidden, $fields_readonly);
+        $fdfurp = forge_fdf("", $urp_data_strings, $urp_data_names, $urp_hidden, $urp_readonly);
         
-        file_put_contents($formfile, $fdf);
-        exec('pdftk '.escapeshellcmd($infile).' fill_form '.escapeshellcmd($formfile).' output '.escapeshellcmd($outfile).' flatten');
+        file_put_contents($formfileurp, $fdfurp);
+        exec('pdftk '.escapeshellcmd($infileurp).' fill_form '.escapeshellcmd($formfileurp).' output '.escapeshellcmd($outfileurp).' flatten');
         
-        if (file_exists($outfile))
+        //Fill in the 4UR form
+        $formfile4ur = sys_get_temp_dir().'/form-4ur-'.$clean_name.'-'.$clean_title.'.fdf';
+        $outfile4ur = sys_get_temp_dir().'/4ur-rcos-'.$clean_name.'-'.$clean_title.'.pdf';
+        
+        $_4ur_data_names = array();
+        $_4ur_data_strings = array();
+        $_4ur_hidden = array();
+        $_4ur_readonly = array();
+        
+        date_default_timezone_set('America/New_York');
+        $_4ur_data_strings['Date']                    = date('m/d/Y');
+        $_4ur_data_strings['Fall']                    = '15';
+        $_4ur_data_strings['Subject Code']            = 'CSCI';
+        $_4ur_data_strings['Credit Hours']            = '4';
+        $_4ur_data_strings['Transcript Course Title'] = 'RCOS';
+        $_4ur_data_strings['Print Instructors Name']  = 'David Goldschmidt';
+        
+        //TODO waiting for data
+        $_4ur_data_strings['specific role of student in the project 1'] = '';
+        $_4ur_data_strings['indicate expected weekly time commitments 1'] = '';
+        $_4ur_data_strings['determined 1'] = '';
+        
+        $_4ur_data_strings['Name']          = $_POST['name']; //TODO follow the Last, First format in the actual form
+        $_4ur_data_strings['Rensselaer ID'] = $_POST['rin'];
+        $_4ur_data_strings['Email']         = $_POST['email'];
+        $_4ur_data_strings['Day phone']     = $_POST['phone'];
+        
+        $fdf4ur = forge_fdf("", $_4ur_data_strings, $_4ur_data_names, $_4ur_hidden, $_4ur_readonly);
+        
+        file_put_contents($formfile4ur, $fdf4ur);
+        exec('pdftk '.escapeshellcmd($infile4ur).' fill_form '.escapeshellcmd($formfile4ur).' output '.escapeshellcmd($outfile4ur).' flatten');
+        
+        $outfilemerge = sys_get_temp_dir().'/urp-4ur-rcos-'.$clean_name.'-'.$clean_title.'.pdf';
+        exec('pdftk '.escapeshellcmd($outfileurp).' '.escapeshellcmd($outfile4ur).' cat output '.escapeshellcmd($outfilemerge));
+        
+        if (file_exists($outfilemerge))
         {
             header('Content-Description: File Transfer');
             header('Content-Type: application/octet-stream');
-            header('Content-Disposition: attachment; filename='.basename($outfile));
+            header('Content-Disposition: attachment; filename='.basename($outfilemerge));
             header('Content-Transfer-Encoding: binary');
             header('Expires: 0');
             header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
             header('Pragma: public');
-            header('Content-Length: ' . filesize($outfile));
+            header('Content-Length: ' . filesize($outfilemerge));
             ob_clean();
             flush();
-            readfile($outfile);
+            readfile($outfilemerge);
             exit;
         }
         else

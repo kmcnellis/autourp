@@ -97,6 +97,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         if ($_POST['citizen'] != "Yes")
             $urp_data_strings['countryOfCitizenship'] = $_POST['altcitizen'];
         
+        //only fill out course/number of credits if for credit.
+        if ($_POST['compensation'] == "Credit")
+        {
+            $urp_data_strings['courseNumber'] = 'CSCI 4941';
+            $urp_data_strings['numberOfCredits'] = $_POST['creditamount'];
+        }
+        
         //Ethnicity field wasn't created properly, needs to be done this way :(
         if(validinput($_POST['ethnicity-africanamerican']))
             $urp_data_strings['AfricanAmerican'] = 'Yes';
@@ -159,7 +166,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             $_4ur_data_strings['indicate expected weekly time commitments 1'] = 'Please see attached';
             $_4ur_data_strings['determined 1'] = 'Please see attached';
             
-            $_4ur_data_strings['Name']                    = $_POST['name']; //TODO follow the Last, First format in the actual form
+            //Split name by last space to turn "Jane Doe" to "Doe, Jane" as required by the name field of the 4UR.
+            list($_4ur_first_name, $_4ur_last_name) = preg_split("/\s+(?=\S*+$)/",$_POST['name']);
+            
+            $_4ur_data_strings['Name']                    = $_4ur_last_name.', '.$_4ur_first_name;
             $_4ur_data_strings['Rensselaer ID']           = $_POST['rin'];
             $_4ur_data_strings['Email']                   = $_POST['email'];
             $_4ur_data_strings['Day phone']               = $_POST['phone'];
@@ -294,7 +304,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             
             <p class="label <?php if ($errors && !validinput($_POST['compensation'])) echo 'error'; ?>">Compensation</p>
             <input type="radio" name="compensation" value="Credit" <?php if ($_POST['compensation'] == "Credit") echo 'checked';?>>Credit
-            <input type="radio" name="compensation" value="funding" <?php if ($_POST['compensation'] == "funding") echo 'checked';?>>Funding
+            <!--<input type="radio" name="compensation" value="funding" <?php if ($_POST['compensation'] == "funding") echo 'checked';?>>Funding-->
             <input type="radio" name="compensation" value="experience" <?php if ($_POST['compensation'] == "experience") echo 'checked';?>>For the Experience
             
             <p class="indented label <?php if ($errors && $_POST['compensation'] == "Credit" && !validinput($_POST['creditamount'])) echo 'error'; ?>">Credit Amount</p>

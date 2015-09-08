@@ -18,7 +18,7 @@ function sanitize_for_file_name($var)
 $errors = false;
 $error_message = "";
 $infileurp = 'URP_Application.pdf';
-$infile4ur = '4ur.pdf';
+$infile4ur = '4ur-circled.pdf';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
@@ -167,6 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             $_4ur_data_strings['determined 1'] = 'Please see attached';
             
             //Split name by last space to turn "Jane Doe" to "Doe, Jane" as required by the name field of the 4UR.
+            //http://stackoverflow.com/a/1530902/1122135
             list($_4ur_first_name, $_4ur_last_name) = preg_split("/\s+(?=\S*+$)/",$_POST['name']);
             
             $_4ur_data_strings['Name']                    = $_4ur_last_name.', '.$_4ur_first_name;

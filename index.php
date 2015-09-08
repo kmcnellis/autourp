@@ -57,8 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         $clean_title = sanitize_for_file_name($_POST['title']);
         
         //Fill in the URP form
-        $formfileurp = sys_get_temp_dir().'/form-urp-'.$clean_name.'-'.$clean_title.'.fdf';
-        $outfileurp = sys_get_temp_dir().'/urp-rcos-'.$clean_name.'-'.$clean_title.'.pdf';
+        $formfileurp = sys_get_temp_dir().'/form-urp-'.$clean_name.'-'.$clean_title.uniqid().'.fdf';
+        $outfileurp = sys_get_temp_dir().'/urp-rcos-'.$clean_name.'-'.$clean_title.uniqid().'.pdf';
         
         $urp_data_names = array();
         $urp_data_strings = array();
@@ -109,8 +109,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         exec('pdftk '.escapeshellcmd($infileurp).' fill_form '.escapeshellcmd($formfileurp).' output '.escapeshellcmd($outfileurp).' flatten');
         
         //Fill in the 4UR form
-        $formfile4ur = sys_get_temp_dir().'/form-4ur-'.$clean_name.'-'.$clean_title.'.fdf';
-        $outfile4ur = sys_get_temp_dir().'/4ur-rcos-'.$clean_name.'-'.$clean_title.'.pdf';
+        $formfile4ur = sys_get_temp_dir().'/form-4ur-'.$clean_name.'-'.$clean_title.uniqid().'.fdf';
+        $outfile4ur = sys_get_temp_dir().'/4ur-rcos-'.$clean_name.'-'.$clean_title.uniqid().'.pdf';
         
         $_4ur_data_names = array();
         $_4ur_data_strings = array();
@@ -140,7 +140,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         file_put_contents($formfile4ur, $fdf4ur);
         exec('pdftk '.escapeshellcmd($infile4ur).' fill_form '.escapeshellcmd($formfile4ur).' output '.escapeshellcmd($outfile4ur).' flatten');
         
-        $outfilemerge = sys_get_temp_dir().'/urp-4ur-rcos-'.$clean_name.'-'.$clean_title.'.pdf';
+        $outfilemerge = sys_get_temp_dir().'/urp-4ur-rcos-'.$clean_name.'-'.$clean_title.uniqid().'.pdf';
         exec('pdftk '.escapeshellcmd($outfileurp).' '.escapeshellcmd($outfile4ur).' cat output '.escapeshellcmd($outfilemerge));
         
         if (file_exists($outfilemerge))
@@ -184,6 +184,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     <a class="return-link" href="http://rcos.io">&lt;-- Return to Observatory</a>
     <span> | </span>
     <a class="return-link" href="/URP_Application.pdf">Original URP Form</a>
+    <span> | </span>
+    <a class="return-link" href="/4ur.pdf">Original 4UR Form</a>
     <h1>Automatic URP Generator</h1>
     <h2>So you can copy/paste and stuff</h2>
     <p class="info message">All fields are required.</p>
@@ -204,7 +206,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             <p class="label <?php if ($errors && (!validinput($_POST["address1"]) || (!validinput($_POST["address2"]) && !validinput($_POST["address3"])))) echo 'error'; ?>">Campus or Local Address</p>
             <input type="text" name="address1" placeholder="110 8th St." value="<?php echo $_POST["address1"]; ?>"><br>
             <input type="text" name="address2" placeholder="Apt 1337" value="<?php echo $_POST["address2"]; ?>"><br>
-            <input type="text" name="address3" placeholder="Troy, NY 12180" value="<?php echo $_POST["address3"]; ?>">
+            <input type="text" name="address3" placeholder="City, ZZ 11111" value="<?php echo $_POST["address3"]; ?>">
             
             <p class="label <?php if ($errors && !validinput($_POST["phone"])) echo 'error'; ?>">Campus/Local Phone</p>
             <input type="text" name="phone" placeholder="(518) 555-5555" value="<?php echo $_POST["phone"]; ?>">

@@ -8,6 +8,7 @@ h1
 {
     margin: auto;
     text-align: center;
+    padding-top: 1em;
 }
 
 h2
@@ -42,7 +43,7 @@ h2
     
     border: 5px solid;
     border-radius: 10px;
-    font-weight: bold;
+    /*font-weight: bold;*/
 }
 
 .message.info
@@ -89,7 +90,7 @@ form
 
 .indented
 {
-    /*margin-left: 1em;*/
+    margin-left: 1em;
 }
 
 input
@@ -104,12 +105,24 @@ input[type="radio"], input[type="checkbox"]
     margin: 0 0.25em 1em 1em;
 }
 
+input[type="radio"].indented, input[type="checkbox"].indented
+{
+    margin-left: 2em;
+}
+
 input[type="text"]
 {
     width: 100%;
     -webkit-box-sizing: border-box;
        -moz-box-sizing: border-box;
             box-sizing: border-box;
+}
+
+input[type="text"].indented
+{
+    width: -webkit-calc(100% - 1em);
+    width:    -moz-calc(100% - 1em);
+    width:         calc(100% - 1em);
 }
 
 input[type="submit"]

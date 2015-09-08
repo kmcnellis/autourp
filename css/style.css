@@ -78,8 +78,10 @@ form
     display: inline-block;
     text-align: left;
     width: 90%;
-    max-width: 1000px;
-    padding: 2em;
+    max-width: -webkit-calc(1000px + 4em);
+    max-width:    -moz-calc(1000px + 4em);
+    max-width:         calc(1000px + 4em);
+    padding: 1em;
 }
 
 .label

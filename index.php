@@ -84,11 +84,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         $urp_data_strings['degreeProgram']           = $_POST['degree'];
         $urp_data_strings['rpiYear']                 = $_POST['year'];
         $urp_data_strings['usCitizenship']           = $_POST['citizen'];
-        $urp_data_strings['countryOfCitizenship']    = $_POST['altcitizen'];
         $urp_data_strings['interestInTeaching']      = $_POST['teaching'];
         $urp_data_strings['creditFundingExperience'] = $_POST['compensation'];
         $urp_data_strings['projectTitle']            = 'RCOS - '.$_POST['title'];
         $urp_data_strings['projectDescription']      = $_POST['plan'];
+        
+        //only fill altcitizen if citizen is not Yes
+        if ($_POST['citizen'] != "Yes")
+            $urp_data_strings['countryOfCitizenship'] = $_POST['altcitizen'];
         
         //Ethnicity field wasn't created properly, needs to be done this way :(
         if(validinput($_POST['ethnicity-africanamerican']))

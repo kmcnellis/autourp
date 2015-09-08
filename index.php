@@ -220,8 +220,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     <a class="return-link" href="/4ur.pdf">Original 4UR Form</a>
     <h1>Automatic URP Generator</h1>
     <h2>So you can copy/paste and stuff</h2>
-    <p class="info message"><b>All fields are required.</b></p>
-    <?php if ($error_message != "") echo '<p class="error message"><b>'.$error_message.'</b></p>'; ?>
     
     <div class="info message">
     <b>Instructions:</b> Fill out this form and press the Submit button on the bottom.
@@ -235,6 +233,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     Bring the stack of forms with you to the RCOS meeting on
     Friday 9/11 or put it in Goldschmidt's mailbox in Lally (second floor).
     </div>
+    
+    <p class="info message"><b>All fields are required.</b></p>
+    <?php if ($error_message != "") echo '<p class="error message"><b>'.$error_message.'</b></p>'; ?>
     
     <form action="/" method="POST" id="urp">
     
